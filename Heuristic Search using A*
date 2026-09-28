@@ -1,0 +1,67 @@
+import heapq
+
+# Graph
+graph = {
+    'S': {'A': 3, 'C': 2},
+    'A': {'B': 4},
+    'B': {'D': 5},
+    'C': {'D': 2},
+    'D': {}
+}
+
+# Heuristic values
+h = {
+    'S': 4,
+    'A': 7,
+    'B': 5,
+    'C': 2,
+    'D': 0
+}
+
+start = 'S'
+goal = 'D'
+
+# Priority queue
+open_list = []
+
+# (f, g, node, path)
+heapq.heappush(open_list, (h[start], 0, start, [start]))
+
+visited = set()
+
+print("A* Search")
+print("-" * 40)
+
+while open_list:
+
+    f, g, current, path = heapq.heappop(open_list)
+
+    if current in visited:
+        continue
+
+    visited.add(current)
+
+    print("Explored Node:", current)
+    print("g(n) =", g)
+    print("h(n) =", h[current])
+    print("f(n) =", f)
+    print()
+
+    # Goal reached
+    if current == goal:
+        print("Final Path:", " -> ".join(path))
+        print("Total Cost:", g)
+        break
+
+    # Generate neighboring nodes
+    for neighbor, cost in graph[current].items():
+
+        if neighbor not in visited:
+
+            new_g = g + cost
+            new_f = new_g + h[neighbor]
+
+            heapq.heappush(
+                open_list,
+                (new_f, new_g, neighbor, path + [neighbor])
+            )
